@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>শৈশবনামা: ৯০ ও ২০০০ দশকের নস্টালজিয়া ট্র্যাক</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Google Fonts (Baloo Da 2 & Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2canvas for Image Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- qrcode.js for QR Code Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Baloo Da 2', 'Poppins', cursive, sans-serif;
+            background-color: #fcf6bd;
+            background-image: radial-gradient(#d0ebff 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-gray-800">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white py-8 px-4 shadow-lg text-center relative overflow-hidden">
+        <div class="max-w-3xl mx-auto relative z-10">
+            <span class="bg-white/20 text-white text-sm px-3 py-1 rounded-full uppercase tracking-wider font-bold inline-block mb-3 backdrop-blur-sm">
+                ✨ নস্টালজিক টাইম মেশিন ✨
+            </span>
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-3 drop-shadow-md">
+                আপনার শৈশব কতটা রঙিন ছিল?
+            </h1>
+            <p class="text-lg md:text-xl font-medium opacity-90 max-w-xl mx-auto">
+                নিচের স্মৃতিগুলো থেকে আপনার সাথে মিলে যাওয়া মুহূর্তগুলো সিলেক্ট করুন আর তৈরি করে নিন আপনার নিজস্ব শৈশব স্কোরকার্ড!
+            </p>
+        </div>
+        <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl w-full mx-auto p-4 md:p-6 my-6 flex-grow">
+
+        <!-- Live Score & Progress Bar Box -->
+        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-5 shadow-xl mb-8 border border-white sticky top-4 z-30 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="w-full sm:w-auto text-center sm:text-left">
+                স্পর্শ করুন আর স্কোর দেখুন: <span id="score-text" class="text-2xl font-bold text-rose-600">০%</span>
+                <div class="w-full bg-gray-200 rounded-full h-3 mt-2 overflow-hidden w-64 mx-auto sm:mx-0">
+                    <div id="progress-bar" class="bg-gradient-to-r from-rose-500 to-amber-500 h-3 rounded-full transition-all duration-300 w-0"></div>
+                </div>
+            </div>
+            <button onclick="openCardModal()" class="w-full sm:w-auto bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-700 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> কার্ড জেনারেট করুন
+            </button>
+        </div>
+
+        <!-- Checklist Container -->
+        <div id="checklist-container" class="space-y-8">
+            <!-- JavaScript দিয়ে ক্যাটাগরি ও আইটেমগুলো লোড হবে -->
+        </div>
+
+        <!-- Floating Generate Button for Mobile -->
+        <div class="fixed bottom-4 right-4 sm:hidden z-40">
+            <button onclick="openCardModal()" class="bg-rose-600 text-white p-4 rounded-full shadow-2xl flex items-center justify-center text-xl cursor-pointer">
+                <i class="fa-solid fa-download"></i>
+            </button>
+        </div>
+    </main>
+
+    <!-- Result Card Preview Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCardModal()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 text-xl font-bold w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-xl font-bold text-center mb-4 text-gray-800">আপনার শৈশব কার্ড কাস্টমাইজ করুন</h3>
+
+            <!-- Theme Selector -->
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-2 text-gray-600">কার্ডের কালার থিম বেছে নিন:</label>
+                <div class="flex gap-2 justify-center">
+                    <button onclick="setTheme('sunset')" class="w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-rose-600 border-2 border-white shadow cursor-pointer"></button>
+                    <button onclick="setTheme('mint')" class="w-8 h-8 rounded-full bg-gradient-to-r from-teal-400 to-cyan-600 border-2 border-white shadow cursor-pointer"></button>
+                    <button onclick="setTheme('vintage')" class="w-8 h-8 rounded-full bg-gradient-to-r from-amber-700 to-yellow-600 border-2 border-white shadow cursor-pointer"></button>
+                    <button onclick="setTheme('purple')" class="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-800 border-2 border-white shadow cursor-pointer"></button>
+                </div>
+            </div>
+
+            <!-- Downloadable Card Canvas Area -->
+            <div id="capture-card" class="rounded-2xl p-6 text-white shadow-xl transition-all duration-300 relative overflow-hidden bg-gradient-to-br from-amber-500 via-rose-500 to-purple-600 mb-6">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                
+                <div class="text-center mb-4">
+                    <span class="bg-white/20 text-xs px-3 py-1 rounded-full uppercase tracking-wider font-bold">শৈশবনামা রিপোর্ট</span>
+                    <h2 class="text-2xl font-black mt-2">আমার শৈশবের স্মৃতি</h2>
+                </div>
+
+                <div class="bg-white/15 backdrop-blur-md rounded-xl p-4 text-center mb-4 border border-white/20">
+                    <div id="card-score-badge" class="text-4xl font-extrabold mb-1">০%</div>
+                    <div id="card-badge-title" class="text-lg font-bold">লোড হচ্ছে...</div>
+                    <p id="card-tagline" class="text-xs opacity-90 mt-1">...</p>
+                </div>
+
+                <!-- Highlights List -->
+                <div class="mb-4 bg-white/10 rounded-xl p-3">
+                    সেরا কিছু স্মৃতি:
+                    <ul id="card-highlights" class="text-xs list-disc list-inside mt-1 space-y-1 opacity-90">
+                        <!-- রেন্ডার হবে -->
+                    </ul>
+                </div>
+
+                <!-- Footer with QR and Link -->
+                <div class="flex items-center justify-between pt-3 border-t border-white/20 mt-4">
+                    <div class="text-left">
+                        <p class="text-[10px] opacity-75">আপনার শৈশবও মাপুন:</p>
+                        <p class="text-xs font-bold underline" id="site-url-text">shishobnama.vercel.app</p>
+                    </div>
+                    <div id="qrcode" class="bg-white p-1 rounded-lg w-12 h-12 flex items-center justify-center"></div>
+                </div>
+            </div>
+
+            <!-- Download Button -->
+            <button onclick="downloadCard()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+                <i class="fa-solid fa-download"></i> ছবি ডাউনলোড করুন
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 py-6 text-center text-sm border-t border-gray-800 mt-12">
+        <p class="mb-1">শৈশবনামা: ৯০ ও ২০০০ দশকের নস্টালজিয়া ট্র্যাক</p>
+        <p class="text-white font-medium">Developed with ❤️ by <span class="text-amber-400">Sujar Biswas Bappu</span></p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data Structure for Categories and Items
+        const categories = [
+            {
+                title: "📺 টেলিভিশন ও পপ কালচার (TV & Pop Culture)",
+                items: [
+                    "বিটিভিতে শুক্রবারের বাংলা সিনেমা দেখা",
+                    "মেকানিক দিয়ে অ্যান্টেনা ঘুরিয়ে 'বিটিভি' ক্লিয়ার করা",
+                    "রিমোট কাজ না করলে ব্যাটারিতে কামড় দেওয়া বা থাপড় দেওয়া",
+                    "বিটিভিতে আলিফ লায়লা, সিণ্ডবাদ, বা মোগলি দেখা",
+                    "প্রিয় গানের ক্যাসেট টেপ পেন্সিল দিয়ে পেঁচিয়ে ঠিক করা",
+                    "কার্টুন নেটওয়ার্ক বা ডিজনি চ্যানেলের পুরোনো কার্টুন দেখা",
+                    "বিটিভির 'ইত্যাদি' বা ম্যাগাজিন অনুষ্ঠান দেখার জন্য অপেক্ষা করা"
+                ]
+            },
+            {
+                title: "⚽ খেলার মাঠ ও ঐতিহ্যবাহী খেলা (Outdoor & Traditional Games)",
+                items: [
+                    "বৃষ্টির মধ্যে কাদা মেখে ফুটবল খেলা",
+                    "পেপসির ক্যাপ জমা করে খেলনা বা গেম খেলা",
+                    "কাগজের নৌকা বানিয়ে ড্রেনে বা বৃষ্টির পানিতে ভাসানো",
+                    "মার্বেল, ডাঙ্গুলি বা সাতচাড়া (Satchara) খেলা",
+                    "আইসক্রিমের কাঠি দিয়ে গাড়ি বা ঘর বানানো",
+                    "গোল্লাছুট, কবাডি বা বউ-ইচি খেলা",
+                    "কাঁচের চুড়ি বা রবারের টায়ার দিয়ে সাইকেলের মতো চালানো"
+                ]
+            },
+            {
+                title: "📚 স্কুল ও পড়াশোনার স্মৃতি (School & Stationery)",
+                items: [
+                    "বইয়ের ভেতরের পৃষ্ঠায় 'ময়ূরের পেখম' রাখা (যাতে বাচ্চা দেয়!)",
+                    "নতুন বইয়ের গন্ধে আলাদা আনন্দ পাওয়া",
+                    "সেন্ট সেন্ট বা সুগন্ধি কালার পেন্সিল ব্যবহার করা",
+                    "পেন্সিল কাটা রাবার দিয়ে দাগ মোছার চেষ্টা করা",
+                    "ঝাউ গাছের ডাল বা ময়ূরপঙ্খী কাঠি দিয়ে স্কেল বানানোর শখ",
+                    "টিফিন পিরিয়ডে বন্ধুদের সাথে খাবার শেয়ার করা"
+                ]
+            },
+            {
+                title: "🍢 খাবার ও স্ট্রিট স্ন্যাকস (Food & Snacks)",
+                items: [
+                    "৫ টাকা বা ১০ টাকার আইসক্রিম বা কুल्फी মালাই খাওয়া",
+                    "হকারদের কাছ থেকে লজেন্স বা চিপস কেনা",
+                    "স্কুল গেটের সামনে আচার বা কাসুন্দি দিয়ে আমড়া-জলপাই খাওয়া",
+                    "পাউরুটিতে চিনি বা ঝাল ঝাল চানাচুর মেখে খাওয়া"
+                ]
+            },
+            {
+                title: "🏡 ঘর ও সাধারণ মজার অভ্যাস (Household Quirks)",
+                items: [
+                    "কারেন্টের বাল্বের আলোতে হাত দিয়ে পাখির ছায়া বানানো",
+                    "লুকিয়ে খাটের নিচে বা আলমারির আড়ালে লুকোচুরি খেলা",
+                    "মেলায় গিয়ে প্লাস্টিকের পিস্তল কিনে কটকট পটকা ফোটানো",
+                    "গায়ে সাবান মেখে মেঝেতে পিচ্ছিল হয়ে স্লিপ খাওয়া"
+                ]
+            }
+        ];
+
+        let selectedItems = new Set();
+        let currentTheme = 'sunset';
+
+        // Initialize Checklist UI
+        function renderChecklist() {
+            const container = document.getElementById('checklist-container');
+            container.innerHTML = '';
+
+            categories.forEach((cat, catIndex) => {
+                let catDiv = document.createElement('div');
+                catDiv.className = 'bg-white/90 backdrop-blur-md rounded-2xl p-5 shadow-md border border-white';
+                
+                let titleHTML = `<h2 class="text-xl font-bold mb-4 text-rose-600 border-b pb-2 flex items-center gap-2">${cat.title}</h2>`;
+                
+                let gridHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">`;
+                cat.items.forEach((item, itemIndex) => {
+                    let id = `cat-${catIndex}-item-${itemIndex}`;
+                    gridHTML += `
+                        <div onclick="toggleItem('${item}')" id="${id}" class="checkbox-card cursor-pointer p-3 rounded-xl border-2 border-gray-200 hover:border-rose-400 transition flex items-center gap-3 bg-gray-50/50 select-none">
+                            <div class="w-6 h-6 rounded-lg border-2 border-gray-400 flex items-center justify-center text-white check-box-icon transition">
+                                <i class="fa-solid fa-check text-xs opacity-0"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">${item}</span>
+                        </div>
+                    `;
+                });
+                gridHTML += `</div>`;
+                
+                catDiv.innerHTML = titleHTML + gridHTML;
+                container.appendChild(catDiv);
+            });
+        }
+
+        // Toggle Item Selection
+        function toggleItem(itemText) {
+            if (selectedItems.has(itemText)) {
+                selectedItems.delete(itemText);
+            } else {
+                selectedItems.add(itemText);
+            }
+            updateUI();
+        }
+
+        // Update Score and Visuals
+        function updateUI() {
+            let totalItems = 0;
+            categories.forEach(c => totalItems += c.items.length);
+            
+            let count = selectedItems.size;
+            let percentage = Math.round((count / totalItems) * 100);
+
+            document.getElementById('score-text').innerText = percentage + '%';
+            document.getElementById('progress-bar').style.width = percentage + '%';
+
+            // Highlight Cards in DOM
+            categories.forEach((cat, catIndex) => {
+                cat.items.forEach((item, itemIndex) => {
+                    let id = `cat-${catIndex}-item-${itemIndex}`;
+                    let el = document.getElementById(id);
+                    if (el) {
+                        let iconBox = el.querySelector('.check-box-icon');
+                        let checkIcon = iconBox.querySelector('i');
+                        if (selectedItems.has(item)) {
+                            el.classList.add('border-rose-500', 'bg-rose-50/80');
+                            el.classList.remove('border-gray-200', 'bg-gray-50/50');
+                            iconBox.classList.add('bg-rose-500', 'border-rose-500');
+                            checkIcon.classList.remove('opacity-0');
+                        } else {
+                            el.classList.remove('border-rose-500', 'bg-rose-50/80');
+                            el.classList.add('border-gray-200', 'bg-gray-50/50');
+                            iconBox.classList.remove('bg-rose-500', 'border-rose-500');
+                            checkIcon.classList.add('opacity-0');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Modal Open & Badge Calculation
+        function openCardModal() {
+            let totalItems = 0;
+            categories.forEach(c => totalItems += c.items.length);
+            let percentage = Math.round((selectedItems.size / totalItems) * 100);
+
+            document.getElementById('card-score-badge').innerText = percentage + '%';
+            
+            let badgeTitle = "";
+            let tagline = "";
+
+            if (percentage >= 80) {
+                badgeTitle = "🏆 ৯০ দশকের গোল্ডেন চাইল্ড";
+                tagline = "আপনি খাঁটি শৈশব উপভোগ করেছেন! বর্তমান যুগের বাচ্চারা এই আনন্দের ১০%ও পাবে না।";
+            } else if (percentage >= 50) {
+                badgeTitle = "🥈 নস্টালজিক মেমোরি মাস্টার";
+                tagline = "আপনার শৈশব বেশ রঙিন ছিল, অনেক দারুণ স্মৃতি আজও মনকে ছুঁয়ে যায়।";
+            } else if (percentage >= 20) {
+                badgeTitle = "🥉 অর্ধেক নোস্টালজিক";
+                tagline = "স্মৃতির কিছু পাতা মিস হয়ে গেছে, তবুও মন্দ নয়!";
+            } else {
+                badgeTitle = "🌱 ডিজিটাল যুগের বাচ্চা";
+                tagline = "আপনি মনে হয় একটু বেশিই স্মার্ট যুগে বড় হয়েছেন!";
+            }
+
+            document.getElementById('card-badge-title').innerText = badgeTitle;
+            document.getElementById('card-tagline').innerText = tagline;
+
+            // Render Highlights List
+            let highlightsUl = document.getElementById('card-highlights');
+            highlightsUl.innerHTML = '';
+            let arr = Array.from(selectedItems).slice(0, 4);
+            if (arr.length === 0) {
+                highlightsUl.innerHTML = `<li class="italic opacity-70">কোনো স্মৃতি সিলেক্ট করা হয়নি!</li>`;
+            } else {
+                arr.forEach(item => {
+                    highlightsUl.innerHTML += `<li>${item}</li>`;
+                });
+            }
+
+            // Generate QR Code
+            document.getElementById('qrcode').innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: window.location.href,
+                width: 44,
+                height: 44,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            
+            document.getElementById('site-url-text').innerText = window.location.host || "shishobnama.vercel.app";
+
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeCardModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        // Theme Changer for Card
+        function setTheme(theme) {
+            currentTheme = theme;
+            let card = document.getElementById('capture-card');
+            card.className = "rounded-2xl p-6 text-white shadow-xl transition-all duration-300 relative overflow-hidden mb-6";
+            
+            if (theme === 'sunset') {
+                card.classList.add('bg-gradient-to-br', 'from-amber-500', 'via-rose-500', 'to-purple-600');
+            } else if (theme === 'mint') {
+                card.classList.add('bg-gradient-to-br', 'from-teal-400', 'via-emerald-500', 'to-cyan-700');
+            } else if (theme === 'vintage') {
+                card.classList.add('bg-gradient-to-br', 'from-amber-700', 'via-yellow-700', 'to-stone-800');
+            } else if (theme === 'purple') {
+                card.classList.add('bg-gradient-to-br', 'from-purple-600', 'via-indigo-700', 'to-slate-900');
+            }
+        }
+
+        // Download Card as PNG
+        function downloadCard() {
+            let cardElement = document.getElementById('capture-card');
+            html2canvas(cardElement, { scale: 3, useCORS: true }).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'my-childhood-score.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // Run on load
+        window.onload = renderChecklist;
+    </script>
+</body>
+</html>
